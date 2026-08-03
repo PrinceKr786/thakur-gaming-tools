@@ -428,7 +428,7 @@
     <div class="login-card">
         <div class="logo">🛡️</div>
         <h1>Admin Panel</h1>
-        <div class="sub">THAKUR GAMING • Secure Admin Access</div>
+        <div class="sub">AKASH GAMING • Secure Admin Access</div>
 
         <div class="error-msg" id="errorMsg"><span>⚠️</span> Invalid email or password!</div>
 
@@ -500,6 +500,7 @@
                         localStorage.removeItem("adminSavedLogin");
                     }
                     sessionStorage.setItem("adminLoggedIn", "true");
+                    localStorage.setItem("adminLoginTime", String(Date.now()));
                     window.location.href = "dashboard.html";
                 })
                 .catch(function() {

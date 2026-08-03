@@ -261,6 +261,7 @@
         }
 
         .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
         .btn-red { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
         .btn-small { padding: 8px 14px; font-size: 11px; }
         .btn-outline { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.16); color: var(--text); }
@@ -768,7 +769,7 @@
         <div class="logo">
             <div class="icon">🛡️</div>
             <div>
-                <div class="name">THAKUR GAMING</div>
+                <div class="name">AKASH GAMING</div>
                 <div class="role">Admin Panel</div>
             </div>
         </div>
@@ -804,7 +805,7 @@
             <div class="form-row">
                 <div>
                     <label>Site Title</label>
-                    <input type="text" id="setTitle" placeholder="THAKUR GAMING">
+                    <input type="text" id="setTitle" placeholder="PRINCE HACKS">
                 </div>
                 <div>
                     <label>Tagline</label>
@@ -839,6 +840,28 @@
                 </div>
             </div>
             <button class="btn" onclick="saveSiteSettings()">SAVE SETTINGS</button>
+        </div>
+
+        <div class="card">
+            <h3>🔐 Change Admin Password</h3>
+            <p class="card-sub">Apna admin panel password badlo — current password confirm karke naya password set karo.</p>
+            <div class="form-row">
+                <div>
+                    <label>Current Password</label>
+                    <input type="password" id="pwCurrent" placeholder="Current password" autocomplete="current-password">
+                </div>
+            </div>
+            <div class="form-row">
+                <div>
+                    <label>New Password</label>
+                    <input type="password" id="pwNew" placeholder="New password (min 6 characters)" autocomplete="new-password">
+                </div>
+                <div>
+                    <label>Confirm New Password</label>
+                    <input type="password" id="pwConfirm" placeholder="Confirm new password" autocomplete="new-password">
+                </div>
+            </div>
+            <button class="btn" id="pwBtn" onclick="changeAdminPassword()">CHANGE PASSWORD</button>
         </div>
 
         <div class="card">
@@ -1082,7 +1105,7 @@
                                         </div>
                                     </div>
                                     <div class="pv-body">
-                                        <div class="pv-title" id="pvTitle">THAKUR GAMING</div>
+                                        <div class="pv-title" id="pvTitle">AKASH GAMING</div>
                                         <div class="pv-sub" id="pvSub">Access dashboard with valid key</div>
                                         <div class="pv-card" id="pvCard">
                                             <div class="pv-klabel" id="pvLabel">YOUR KEY</div>
@@ -1115,7 +1138,7 @@
 
     <script type="module">
         import { auth, db } from "./firebase-config.js";
-        import { onAuthStateChanged, signOut } from "firebase/auth";
+        import { onAuthStateChanged, signOut, reauthenticateWithCredential, EmailAuthProvider, updatePassword } from "firebase/auth";
         import { ref, get, set, update } from "firebase/database";
 
         window.auth = auth;
@@ -1136,6 +1159,17 @@
         onAuthStateChanged(auth, function(user) {
             if (!user) {
                 window.location.href = "index.html";
+                return;
+            }
+            const loginTime = parseInt(localStorage.getItem("adminLoginTime") || "0", 10);
+            if (!loginTime) {
+                localStorage.setItem("adminLoginTime", String(Date.now()));
+            } else if (Date.now() - loginTime > 24 * 60 * 60 * 1000) {
+                signOut(auth).then(function() {
+                    sessionStorage.removeItem("adminLoggedIn");
+                    localStorage.removeItem("adminLoginTime");
+                    window.location.href = "index.html";
+                });
                 return;
             }
             window.adminEmailAddr = user.email;
@@ -1246,6 +1280,42 @@
             }).catch(function() { showToast("Error saving settings!", true); });
         }
         window.saveSiteSettings = saveSiteSettings;
+
+        function changeAdminPassword() {
+            const current = document.getElementById("pwCurrent").value;
+            const next = document.getElementById("pwNew").value;
+            const confirmVal = document.getElementById("pwConfirm").value;
+            const btn = document.getElementById("pwBtn");
+            if (!current || !next || !confirmVal) { showToast("Saare fields bharo!", true); return; }
+            if (next.length < 6) { showToast("New password kam se kam 6 characters ka ho!", true); return; }
+            if (next !== confirmVal) { showToast("New password aur confirm match nahi karte!", true); return; }
+            const user = auth.currentUser;
+            if (!user) { showToast("Login nahi hai!", true); return; }
+            btn.disabled = true;
+            btn.innerText = "CHANGING...";
+            reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email, current))
+                .then(function() {
+                    return updatePassword(auth.currentUser, next);
+                })
+                .then(function() {
+                    showToast("Password changed! Naye password se login karo.");
+                    document.getElementById("pwCurrent").value = "";
+                    document.getElementById("pwNew").value = "";
+                    document.getElementById("pwConfirm").value = "";
+                })
+                .catch(function(err) {
+                    let msg = "Error changing password!";
+                    if (err && err.code === "auth/wrong-password") msg = "Current password galat hai!";
+                    else if (err && err.code === "auth/weak-password") msg = "New password bahut chhota hai (6+ characters)!";
+                    else if (err && err.code === "auth/requires-recent-login") msg = "Thodi der pehle login karo aur dobara try karo!";
+                    showToast(msg, true);
+                })
+                .finally(function() {
+                    btn.disabled = false;
+                    btn.innerText = "CHANGE PASSWORD";
+                });
+        }
+        window.changeAdminPassword = changeAdminPassword;
 
         function saveMaintenance() {
             const data = {

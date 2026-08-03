@@ -819,7 +819,7 @@
         <div class="logo">
             <div class="icon">🛡️</div>
             <div>
-                <div class="name">THAKUR GAMING</div>
+                <div class="name">AKASH GAMING</div>
                 <div class="role">Admin Panel</div>
             </div>
         </div>
@@ -943,6 +943,17 @@
         onAuthStateChanged(auth, function(user) {
             if (!user) {
                 window.location.href = "index.html";
+                return;
+            }
+            const loginTime = parseInt(localStorage.getItem("adminLoginTime") || "0", 10);
+            if (!loginTime) {
+                localStorage.setItem("adminLoginTime", String(Date.now()));
+            } else if (Date.now() - loginTime > 24 * 60 * 60 * 1000) {
+                signOut(auth).then(function() {
+                    sessionStorage.removeItem("adminLoggedIn");
+                    localStorage.removeItem("adminLoginTime");
+                    window.location.href = "index.html";
+                });
                 return;
             }
             window.adminEmailAddr = user.email;
