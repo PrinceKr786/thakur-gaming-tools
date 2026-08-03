@@ -1,0 +1,32 @@
+{
+  "rules": {
+    "siteSettings": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "categories": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "posts": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "appUpdate": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "ActiveUserKeys": {
+      ".read": true,
+      ".write": true
+    },
+    "BannedDevices": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "users": {
+      ".read": true,
+      ".write": "newData.exists()"
+    }
+  }
+}
