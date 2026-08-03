@@ -1,5 +1,6 @@
 {
   "rules": {
+    ".read": "auth != null",
     "siteSettings": {
       ".read": true,
       ".write": "auth != null"
