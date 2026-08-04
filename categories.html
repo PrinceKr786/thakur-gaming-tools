@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POSTS - ADMIN PANEL</title>
+    <title>CATEGORIES - ADMIN PANEL</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -278,106 +278,6 @@
 
         .field-hint b { color: #ff0080; font-weight: 700; }
 
-        .custom-select {
-            position: relative;
-            width: 100%;
-        }
-
-        .cs-trigger {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 13px 16px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            background: rgba(0, 0, 0, 0.35);
-            color: var(--text);
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-
-        .cs-trigger:hover { border-color: rgba(99, 102, 241, 0.5); }
-
-        .cs-trigger .cs-value {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .cs-trigger .cs-arrow {
-            color: var(--accent);
-            font-size: 14px;
-            transition: transform 0.2s;
-        }
-
-        .custom-select.open .cs-trigger {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
-        }
-
-        .custom-select.open .cs-arrow {
-            transform: rotate(180deg);
-        }
-
-        .cs-menu {
-            display: none;
-            position: absolute;
-            top: calc(100% + 8px);
-            left: 0;
-            right: 0;
-            background: var(--panel-2);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 6px;
-            z-index: 30;
-            max-height: 260px;
-            overflow-y: auto;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
-        }
-
-        .custom-select.open .cs-menu {
-            display: block;
-            animation: csIn 0.18s ease-out;
-        }
-
-        .custom-select.open { z-index: 60; }
-        .card:has(.custom-select.open) { position: relative; z-index: 6; }
-
-        @keyframes csIn {
-            from { opacity: 0; transform: translateY(-6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .cs-option {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 11px 14px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text);
-            transition: all 0.15s;
-            border: 1px solid transparent;
-        }
-
-        .cs-option:hover { background: rgba(99, 102, 241, 0.12); }
-        .cs-option.selected {
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2), rgba(236, 72, 153, 0.2));
-            border-color: var(--border);
-            color: #fff;
-        }
-
-        .cs-option .cs-opt-icon { font-size: 16px; width: 22px; text-align: center; }
-        .cs-option .cs-opt-name { flex: 1; }
-        .cs-option .cs-opt-check { color: var(--green); font-weight: 900; }
-
         .btn {
             padding: 12px 20px;
             border: none;
@@ -395,200 +295,6 @@
         .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
         .btn-red { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
         .btn-small { padding: 8px 14px; font-size: 11px; }
-        .btn-ghost {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--muted);
-            padding: 8px 12px;
-            font-size: 11px;
-        }
-        .btn-ghost:hover { color: #fff; background: rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.4); }
-
-        .post-num {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 30px;
-            height: 26px;
-            padding: 0 8px;
-            border-radius: 8px;
-            background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(236, 72, 153, 0.25));
-            border: 1px solid rgba(99, 102, 241, 0.35);
-            color: #fff;
-            font-size: 12px;
-            font-weight: 800;
-        }
-
-        .list-item.post-card {
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-            min-width: 0;
-            padding: 14px;
-        }
-
-        .post-card .post-imgs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .post-card .pi {
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            aspect-ratio: 4 / 3;
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .post-card .pi img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .post-card .pi .tag {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            font-size: 9px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            background: rgba(0, 0, 0, 0.65);
-            color: #fff;
-            padding: 3px 8px;
-            border-radius: 8px;
-        }
-
-        .post-card .pi .ph {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: var(--muted);
-            font-size: 11px;
-            font-weight: 700;
-        }
-
-        .post-card .post-top {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .post-card .post-title {
-            font-size: 14px;
-            font-weight: 800;
-            color: #fff;
-            min-width: 0;
-            line-height: 1.35;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-            overflow-wrap: anywhere;
-            word-break: break-word;
-            min-height: 38px;
-        }
-
-        .post-card .post-title-empty {
-            color: #94a3b8;
-            font-style: italic;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .post-card .post-cat {
-            font-size: 10px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--muted);
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .post-card .post-badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .post-card .post-badges .badge {
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            background: rgba(99, 102, 241, 0.15);
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            color: #c7d2fe;
-        }
-
-        .post-card .post-badges .badge.zip {
-            background: rgba(16, 185, 129, 0.15);
-            border-color: rgba(16, 185, 129, 0.3);
-            color: #a7f3d0;
-        }
-
-        .post-card .post-badges .badge.none {
-            background: rgba(239, 68, 68, 0.12);
-            border-color: rgba(239, 68, 68, 0.3);
-            color: #fca5a5;
-        }
-
-        .post-card .post-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: auto;
-        }
-
-        @media (min-width: 701px) and (max-width: 1050px) {
-            #postsList {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 14px;
-                align-items: stretch;
-            }
-        }
-
-        @media (min-width: 1051px) {
-            #postsList {
-                display: grid;
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-                gap: 14px;
-                align-items: stretch;
-            }
-        }
-
-        @media (min-width: 701px) {
-            .post-card .post-actions {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 8px;
-            }
-
-            .post-card .post-actions .btn {
-                font-size: 12px;
-                padding: 10px 8px;
-            }
-
-            .post-card .post-imgs {
-                height: 120px;
-                flex-shrink: 0;
-            }
-            .post-card .post-imgs .pi {
-                aspect-ratio: auto;
-                height: 100%;
-            }
-        }
 
         .list-item {
             display: flex;
@@ -791,7 +497,6 @@
             .list-item .info .thumb { width: 38px; height: 38px; }
             .actions { width: 100%; justify-content: flex-end; }
             .actions .btn { flex: 1; }
-            .post-card .post-actions .btn { flex: 1; }
         }
 
         /* ==== UI ENHANCEMENTS: glow / glass / animation / touch ==== */
@@ -1012,8 +717,8 @@
 
         <div class="nav-item" data-view="overview"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span><span class="txt">Overview</span></div>
         <div class="nav-item" data-view="keys"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.5 12.5 20 3M14 9l3 3M17.5 5.5l3 3"/></svg></span><span class="txt">User Keys</span></div>
-        <div class="nav-item" data-view="categories"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span><span class="txt">Categories</span></div>
-        <div class="nav-item active" data-view="posts"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span><span class="txt">Posts</span></div>
+        <div class="nav-item active" data-view="categories"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span><span class="txt">Categories</span></div>
+        <div class="nav-item" data-view="posts"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span><span class="txt">Posts</span></div>
         <div class="nav-item" data-view="settings"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg></span><span class="txt">Settings</span><span class="nav-arrow">▾</span></div>
         <div class="nav-sub" id="settingsSub">
             <div class="nav-sub-item" onclick="window.location.href='settings.html?tab=general'"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2M9 10h6M9 14h6M9 18h4"/></svg> Site Settings</div>
@@ -1027,14 +732,14 @@
     <nav class="mobile-nav" id="mobileNav">
         <div class="m-item" data-view="overview"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>Home</div>
         <div class="m-item" data-view="keys"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.5 12.5 20 3M14 9l3 3M17.5 5.5l3 3"/></svg></span>Keys</div>
-        <div class="m-item" data-view="categories"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span>Cats</div>
-        <div class="m-item active" data-view="posts"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span>Posts</div>
+        <div class="m-item active" data-view="categories"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg></span>Cats</div>
+        <div class="m-item" data-view="posts"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg></span>Posts</div>
         <div class="m-item" data-view="settings"><span class="ic"><svg class="svg-ic" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M18.7 5.3l-2.1 2.1M7.4 16.6l-2.1 2.1"/></svg></span>Settings</div>
     </nav>
 
     <div class="main">
         <div class="topbar">
-            <h1 id="pageTitle">Posts</h1>
+            <h1 id="pageTitle">Categories</h1>
             <div class="topbar-right">
                 <div class="user-chip" id="adminEmail">Admin</div>
                 <button class="topbar-exit" onclick="document.getElementById('logoutBtn').click()"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h5M15 16l4-4-4-4M19 12H9"/></svg> EXIT</button>
@@ -1042,66 +747,34 @@
         </div>
 
         <div class="card">
-            <h3>Select Category</h3>
-            <div class="custom-select">
-                <button type="button" class="cs-trigger" onclick="toggleCatDropdown()">
-                    <span class="cs-value" id="postCatValue">-- Select category --</span>
-                    <span class="cs-arrow" id="postCatArrow">▾</span>
-                </button>
-                <div class="cs-menu" id="postCatMenu"></div>
-            </div>
-        </div>
-
-        <div class="card" id="addPostCard" style="display: none;">
-            <h3>Add New Post</h3>
+            <h3>Add New Category</h3>
             <div class="form-row">
                 <div>
-                    <label>Title</label>
-                    <input type="text" id="postTitleInput" placeholder="Post title">
+                    <label>Category Name</label>
+                    <input type="text" id="catNameInput" placeholder="e.g. NEW POSTS">
+                </div>
+                <div>
+                    <label>Icon (emoji)</label>
+                    <input type="text" id="catIconInput" placeholder="e.g. 🔥">
                 </div>
             </div>
             <div class="form-row">
                 <div>
-                    <label>Photo 1 URL (Before)</label>
-                    <input type="url" id="postImg1Input" placeholder="https://...">
-                    <div class="field-hint">Best size: <b>800 × 600</b> px (dono photo same size rakho)</div>
+                    <label>Photo / Image URL</label>
+                    <input type="text" id="catImageInput" placeholder="https://...">
+                    <div class="field-hint">Best size: <b>600 × 400</b> px (chhota card photo)</div>
                 </div>
                 <div>
-                    <label>Photo 2 URL (After)</label>
-                    <input type="url" id="postImg2Input" placeholder="https://...">
-                    <div class="field-hint">Best size: <b>800 × 600</b> px (dono photo same size rakho)</div>
+                    <label>Posts Count (kitne posts dikhe)</label>
+                    <input type="number" id="catLimitInput" placeholder="e.g. 20" min="1">
                 </div>
             </div>
-            <div class="form-row">
-                <div>
-                    <label>Free Fire Link</label>
-                    <input type="url" id="postLinkInput" placeholder="https://...">
-                </div>
-                <div>
-                    <label>Free Fire MAX Link</label>
-                    <input type="url" id="postLink2Input" placeholder="https://...">
-                    <div class="field-hint">Khaali chhod do to Free Fire MAX button nahi dikhega</div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div>
-                    <label>ZIP Download Link</label>
-                    <input type="url" id="postZipInput" placeholder="https://....zip">
-                    <div class="field-hint">ZIP file link — MediaFire / Google Drive / direct .zip supported. App me DOWNLOAD ZIP button aayega (background download + extract, no browser).</div>
-                </div>
-            </div>
-            <div class="form-row">
-                <div>
-                    <label>Post Number (position)</label>
-                    <input type="number" id="postNumInput" placeholder="Auto = last position" min="1">
-                </div>
-            </div>
-            <button class="btn" onclick="addPost()">Save Post</button>
+            <button class="btn" onclick="addCategory()">Save Category</button>
         </div>
 
         <div class="card">
-            <h3>Posts in Selected Category</h3>
-            <div id="postsList"><div class="empty-state">Loading all posts...</div></div>
+            <h3>Categories</h3>
+            <div id="catsList"></div>
         </div>
     </div>
 
@@ -1114,7 +787,7 @@
     <script type="module">
         import { auth, db } from "./firebase-config.js";
         import { onAuthStateChanged, signOut } from "firebase/auth";
-        import { ref, get, set, remove, push, onValue, update, query, orderByChild } from "firebase/database";
+        import { ref, get, set, update, remove } from "firebase/database";
 
         window.auth = auth;
         window.db = db;
@@ -1122,13 +795,8 @@
         window.ref = ref;
         window.get = get;
         window.set = set;
-        window.remove = remove;
-        window.push = push;
-        window.onValue = onValue;
         window.update = update;
-
-        let selectedCatKey = "";
-        let catNameMap = {};
+        window.remove = remove;
 
         function applyAdminChip() {
             const el = document.getElementById("adminEmail");
@@ -1156,7 +824,8 @@
             }
             window.adminEmailAddr = user.email;
             applyAdminChip();
-            loadPostCategorySelect();
+            loadCategories();
+
         });
 
         document.getElementById("logoutBtn").addEventListener("click", function() {
@@ -1173,21 +842,21 @@
                     document.getElementById("logoutBtn").click();
                     return;
                 }
-                if (view === "posts") return;
+                if (view === "categories") return;
+                if (view === "keys") {
+                    window.location.href = "keys.html";
+                    return;
+                }
+                if (view === "posts") {
+                    window.location.href = "posts.html";
+                    return;
+                }
                 if (view === "settings") {
                     if (item.classList.contains("m-item")) {
                         window.location.href = "settings.html";
                         return;
                     }
                     item.classList.toggle("open");
-                    return;
-                }
-                if (view === "categories") {
-                    window.location.href = "categories.html";
-                    return;
-                }
-                if (view === "keys") {
-                    window.location.href = "keys.html";
                     return;
                 }
                 window.location.href = "dashboard.html?view=" + view;
@@ -1216,266 +885,99 @@
         }
         window.jsStr = jsStr;
 
-        function loadPostCategorySelect() {
-            const menu = document.getElementById("postCatMenu");
+        function loadCategories() {
+            const list = document.getElementById("catsList");
+            list.innerHTML = '<div class="empty-state">Loading...</div>';
             get(ref(db, "categories")).then(function(snap) {
-                menu.innerHTML = "";
+                list.innerHTML = "";
                 if (!snap.exists()) {
-                    menu.innerHTML = '<div class="cs-option">No categories yet.</div>';
+                    list.innerHTML = '<div class="empty-state">No categories yet. Add one above.</div>';
                     return;
                 }
                 const cats = snap.val();
                 Object.keys(cats).forEach(function(key) {
                     const data = cats[key] || {};
-                    catNameMap[key] = data.name || key;
-                    const opt = document.createElement("div");
-                    opt.className = "cs-option" + (selectedCatKey === key ? " selected" : "");
-                    opt.dataset.key = key;
-                    opt.innerHTML =
-                        '<span class="cs-opt-icon">' + esc(data.icon || "🗂️") + '</span>' +
-                        '<span class="cs-opt-name">' + esc(data.name || key) + '</span>' +
-                        '<span class="cs-opt-check">' + (selectedCatKey === key ? "✓" : "") + '</span>';
-                    opt.addEventListener("click", function() {
-                        selectPostCat(key, data.name || key, data.icon || "🗂️");
-                    });
-                    menu.appendChild(opt);
-                });
-                loadPostsForCat();
-            });
-        }
-        window.loadPostCategorySelect = loadPostCategorySelect;
-
-        function selectPostCat(key, name, icon) {
-            selectedCatKey = key;
-            document.getElementById("postCatValue").innerText = (icon ? icon + " " : "") + name;
-            document.getElementById("postCatMenu").querySelectorAll(".cs-option").forEach(function(o) {
-                const isSel = o.dataset.key === key;
-                o.classList.toggle("selected", isSel);
-                o.querySelector(".cs-opt-check").innerText = isSel ? "✓" : "";
-            });
-            closeCatDropdown();
-            loadPostsForCat();
-        }
-        window.selectPostCat = selectPostCat;
-
-        function toggleCatDropdown() {
-            const wrap = document.getElementById("postCatMenu").parentElement;
-            wrap.classList.toggle("open");
-        }
-        window.toggleCatDropdown = toggleCatDropdown;
-
-        function closeCatDropdown() {
-            document.getElementById("postCatMenu").parentElement.classList.remove("open");
-        }
-        window.closeCatDropdown = closeCatDropdown;
-
-        document.addEventListener("click", function(e) {
-            if (!e.target.closest(".custom-select")) {
-                closeCatDropdown();
-            }
-        });
-
-        function loadPostsForCat() {
-            const catKey = selectedCatKey;
-            const list = document.getElementById("postsList");
-            document.getElementById("addPostCard").style.display = catKey ? "block" : "none";
-            list.innerHTML = '<div class="empty-state">Loading...</div>';
-            get(ref(db, "posts")).then(function(snap) {
-                list.innerHTML = "";
-                const all = [];
-                if (snap.exists()) {
-                    const cats = snap.val();
-                    if (catKey) {
-                        Object.keys(cats[catKey] || {}).forEach(function(postId) {
-                            all.push({ catKey: catKey, postId: postId, post: cats[catKey][postId] || {} });
-                        });
-                    } else {
-                        Object.keys(cats).forEach(function(ck) {
-                            Object.keys(cats[ck] || {}).forEach(function(postId) {
-                                all.push({ catKey: ck, postId: postId, post: cats[ck][postId] || {} });
-                            });
-                        });
-                    }
-                }
-                if (!all.length) {
-                    list.innerHTML = '<div class="empty-state">' + (catKey ? "No posts in this category yet." : "No posts yet. Select a category and add one.") + '</div>';
-                    return;
-                }
-                all.sort(function(a, b) {
-                    const oa = postOrderOf(a.post, a.postId);
-                    const ob = postOrderOf(b.post, b.postId);
-                    if (oa !== ob) return oa - ob;
-                    return idNum(a.postId) - idNum(b.postId);
-                });
-                all.forEach(function(entry) {
-                    const p = entry.post;
-                    const catKey2 = entry.catKey;
-                    const postId = entry.postId;
                     const item = document.createElement("div");
-                    item.className = "list-item post-card";
-                    let catLabel = "";
-                    if (!catKey) {
-                        catLabel = '<div class="post-cat"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fb923c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7z"/></svg> ' + esc(catNameMap[catKey2] || catKey2) + '</div>';
-                    }
-                    let badges = "";
-                    if (p.link) badges += '<span class="badge"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#818cf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6h10M7 12h10M7 18h10"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg> Free Fire</span>';
-                    if (p.link2) badges += '<span class="badge"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#c084fc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 6h10M7 12h10M7 18h10"/><rect x="3" y="3" width="18" height="18" rx="2"/></svg> FF MAX</span>';
-                    if (p.zipLink) badges += '<span class="badge zip"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg> ZIP</span>';
-                    if (!badges) badges = '<span class="badge none">No links</span>';
+                    item.className = "list-item";
                     item.innerHTML =
-                        catLabel +
-                        '<div class="post-imgs">' +
-                        '<div class="pi">' + (p.img1 ? '<img src="' + esc(p.img1) + '" alt="Before"><span class="tag">Before</span>' : '<div class="ph">No photo</div>') + '</div>' +
-                        '<div class="pi">' + (p.img2 ? '<img src="' + esc(p.img2) + '" alt="After"><span class="tag">After</span>' : '<div class="ph">No photo</div>') + '</div>' +
-                        '</div>' +
-                        '<div class="post-top">' +
-                        '<div class="post-title' + (p.title ? '' : ' post-title-empty') + '">' + esc(p.title || "No title") + '</div>' +
-                        '<span class="post-num">#' + postOrderOf(p, postId) + '</span>' +
-                        '</div>' +
-                        '<div class="post-badges">' + badges + '</div>' +
-                        '<div class="post-actions">' +
-                        '<button class="btn btn-ghost btn-small" title="Move up" onclick="movePost(\'' + jsStr(catKey2) + '\',\'' + jsStr(postId) + '\',-1)">▲</button>' +
-                        '<button class="btn btn-ghost btn-small" title="Move down" onclick="movePost(\'' + jsStr(catKey2) + '\',\'' + jsStr(postId) + '\',1)">▼</button>' +
-                        '<button class="btn btn-small" onclick="editPost(\'' + jsStr(catKey2) + '\',\'' + jsStr(postId) + '\')">EDIT</button>' +
-                        '<button class="btn btn-red btn-small" onclick="deletePost(\'' + jsStr(catKey2) + '\',\'' + jsStr(postId) + '\')">DELETE</button>' +
+                        '<div class="info">' +
+                        '<img class="thumb" src="' + esc(data.image) + '" alt="">' +
+                        '<div><div class="t1">' + esc(data.icon) + ' ' + esc(data.name) + '</div>' +
+                        '<div class="t2">Posts limit: ' + esc(data.limit || "∞") + ' • ' + esc(key) + '</div></div></div>' +
+                        '<div class="actions">' +
+                        '<button class="btn btn-small" onclick="editCategory(\'' + jsStr(key) + '\')">EDIT</button>' +
+                        '<button class="btn btn-red btn-small" onclick="deleteCategory(\'' + jsStr(key) + '\')">DELETE</button>' +
                         '</div>';
                     list.appendChild(item);
-                    const tl = (p.title || "").length;
-                    if (tl > 0) {
-                        const fs = tl <= 25 ? 14 : tl <= 45 ? 13 : tl <= 65 ? 12 : tl <= 90 ? 11 : 10;
-                        item.querySelector(".post-title").style.fontSize = fs + "px";
-                    }
                 });
             }).catch(function() {
-                list.innerHTML = '<div class="empty-state">Error loading posts.</div>';
+                list.innerHTML = '<div class="empty-state">Error loading categories.</div>';
             });
         }
-        window.loadPostsForCat = loadPostsForCat;
+        window.loadCategories = loadCategories;
 
-        function idNum(id) {
-            return parseInt(String(id || "").replace(/\D+/g, ""), 10) || 0;
-        }
-
-        function postOrderOf(post, postId) {
-            if (post && typeof post.order === "number") return post.order;
-            return idNum(postId);
-        }
-
-        function movePost(catKey, postId, dir) {
-            get(ref(db, "posts/" + catKey)).then(function(snap) {
-                if (!snap.exists()) return;
-                const posts = snap.val();
-                const ids = Object.keys(posts).sort(function(a, b) {
-                    const oa = postOrderOf(posts[a], a);
-                    const ob = postOrderOf(posts[b], b);
-                    if (oa !== ob) return oa - ob;
-                    return idNum(a) - idNum(b);
-                });
-                const idx = ids.indexOf(postId);
-                const other = ids[idx + dir];
-                if (idx < 0 || !other) { showToast("Already at edge!", true); return; }
-                const curOrder = postOrderOf(posts[postId], postId);
-                const otherOrder = postOrderOf(posts[other], other);
-                const updates = {};
-                updates["posts/" + catKey + "/" + postId + "/order"] = otherOrder;
-                updates["posts/" + catKey + "/" + other + "/order"] = curOrder;
-                update(ref(db), updates)
-                    .then(function() {
-                        showToast("Order updated!");
-                        loadPostsForCat();
-                    })
-                    .catch(function() { showToast("Error!", true); });
-            });
-        }
-        window.movePost = movePost;
-
-        function addPost() {
-            const catKey = selectedCatKey;
-            const title = document.getElementById("postTitleInput").value.trim();
-            const img1 = document.getElementById("postImg1Input").value.trim();
-            const img2 = document.getElementById("postImg2Input").value.trim();
-            const link = document.getElementById("postLinkInput").value.trim();
-            const link2 = document.getElementById("postLink2Input").value.trim();
-            const zipLink = document.getElementById("postZipInput").value.trim();
-            const wantOrder = parseInt(document.getElementById("postNumInput").value, 10);
-            if (!catKey) { showToast("Select a category first!", true); return; }
-            get(ref(db, "posts/" + catKey)).then(function(snap) {
-                let max = 0;
-                if (snap.exists()) {
-                    const pst = snap.val();
-                    Object.keys(pst).forEach(function(k) {
-                        const v = postOrderOf(pst[k], k);
-                        if (v > max) max = v;
-                    });
-                }
-                const order = isNaN(wantOrder) ? (max + 1) : wantOrder;
-                const postId = "post-" + Date.now();
-                return set(ref(db, "posts/" + catKey + "/" + postId),
-                    { title: title, img1: img1, img2: img2, link: link, link2: link2, zipLink: zipLink, order: order });
-            })
+        function addCategory() {
+            const name = document.getElementById("catNameInput").value.trim();
+            const icon = document.getElementById("catIconInput").value.trim() || "🗂️";
+            const image = document.getElementById("catImageInput").value.trim();
+            const limit = document.getElementById("catLimitInput").value.trim() || "";
+            if (!name) { showToast("Category name is required!", true); return; }
+            const key = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "cat-" + Date.now();
+            set(ref(db, "categories/" + key), { name: name, icon: icon, image: image, limit: limit })
                 .then(function() {
-                    showToast("Post saved!");
-                    document.getElementById("postTitleInput").value = "";
-                    document.getElementById("postImg1Input").value = "";
-                    document.getElementById("postImg2Input").value = "";
-                    document.getElementById("postLinkInput").value = "";
-                    document.getElementById("postLink2Input").value = "";
-                    document.getElementById("postZipInput").value = "";
-                    document.getElementById("postNumInput").value = "";
-                    loadPostsForCat();
+                    showToast("Category saved!");
+                    document.getElementById("catNameInput").value = "";
+                    document.getElementById("catIconInput").value = "";
+                    document.getElementById("catImageInput").value = "";
+                    document.getElementById("catLimitInput").value = "";
+                    loadCategories();
                 })
-                .catch(function() { showToast("Error saving post!", true); });
+                .catch(function() { showToast("Error saving category!", true); });
         }
-        window.addPost = addPost;
+        window.addCategory = addCategory;
 
-        function editPost(catKey, postId) {
-            get(ref(db, "posts/" + catKey + "/" + postId)).then(function(snap) {
-                const p = snap.val() || {};
-                const curOrder = postOrderOf(p, postId);
+        function editCategory(key) {
+            get(ref(db, "categories/" + key)).then(function(snap) {
+                const data = snap.val() || {};
                 document.getElementById("modalBody").innerHTML =
-                    '<h3>Edit Post</h3>' +
-                    '<div class="form-row"><div><label>Title</label><input type="text" id="mPostTitle" value="' + esc(p.title) + '"></div></div>' +
-                    '<div class="form-row"><div><label>Photo 1 URL</label><input type="text" id="mPostImg1" value="' + esc(p.img1) + '"><div class="field-hint">Best size: <b>800 × 600</b> px</div></div>' +
-                    '<div><label>Photo 2 URL</label><input type="text" id="mPostImg2" value="' + esc(p.img2) + '"><div class="field-hint">Best size: <b>800 × 600</b> px</div></div></div>' +
-                    '<div class="form-row"><div><label>Free Fire Link</label><input type="text" id="mPostLink" value="' + esc(p.link) + '"></div>' +
-                    '<div><label>Free Fire MAX Link</label><input type="text" id="mPostLink2" value="' + esc(p.link2) + '"></div></div>' +
-                    '<div class="form-row"><div><label>ZIP Download Link</label><input type="text" id="mPostZip" value="' + esc(p.zipLink) + '"><div class="field-hint">MediaFire / Google Drive / direct .zip — background download + extract</div></div></div>' +
-                    '<div class="form-row"><div><label>Post Number (position)</label><input type="number" id="mPostNum" value="' + esc(curOrder) + '" min="1"></div></div>' +
+                    '<h3>Edit Category</h3>' +
+                    '<div class="form-row"><div><label>Category Name</label><input type="text" id="mCatName" value="' + esc(data.name) + '"></div>' +
+                    '<div><label>Icon (emoji)</label><input type="text" id="mCatIcon" value="' + esc(data.icon) + '"></div></div>' +
+                    '<div class="form-row"><div><label>Photo / Image URL</label><input type="text" id="mCatImage" value="' + esc(data.image) + '"><div class="field-hint">Best size: <b>600 × 400</b> px</div></div>' +
+                    '<div><label>Posts Count</label><input type="number" id="mCatLimit" value="' + esc(data.limit) + '" min="1"></div></div>' +
                     '<div style="display: flex; gap: 10px; justify-content: flex-end;">' +
                     '<button class="btn btn-red btn-small" onclick="closeModal()">CANCEL</button>' +
-                    '<button class="btn btn-small" onclick="savePostEdit(\'' + jsStr(catKey) + '\',\'' + jsStr(postId) + '\')">SAVE</button></div>';
+                    '<button class="btn btn-small" onclick="saveCategoryEdit(\'' + jsStr(key) + '\')">SAVE</button></div>';
                 document.getElementById("modalOverlay").classList.add("show");
             });
         }
-        window.editPost = editPost;
+        window.editCategory = editCategory;
 
-        function savePostEdit(catKey, postId) {
-            const title = document.getElementById("mPostTitle").value.trim();
-            const img1 = document.getElementById("mPostImg1").value.trim();
-            const img2 = document.getElementById("mPostImg2").value.trim();
-            const link = document.getElementById("mPostLink").value.trim();
-            const link2 = document.getElementById("mPostLink2").value.trim();
-            const zipLink = document.getElementById("mPostZip").value.trim();
-            let order = parseInt(document.getElementById("mPostNum").value, 10);
-            if (isNaN(order)) order = postOrderOf(null, postId);
-            set(ref(db, "posts/" + catKey + "/" + postId), { title: title, img1: img1, img2: img2, link: link, link2: link2, zipLink: zipLink, order: order })
+        function saveCategoryEdit(key) {
+            const name = document.getElementById("mCatName").value.trim();
+            const icon = document.getElementById("mCatIcon").value.trim() || "🗂️";
+            const image = document.getElementById("mCatImage").value.trim();
+            const limit = document.getElementById("mCatLimit").value.trim() || "";
+            update(ref(db, "categories/" + key), { name: name, icon: icon, image: image, limit: limit })
                 .then(function() {
-                    showToast("Post updated!");
+                    showToast("Category updated!");
                     closeModal();
-                    loadPostsForCat();
+                    loadCategories();
                 })
                 .catch(function() { showToast("Error!", true); });
         }
-        window.savePostEdit = savePostEdit;
+        window.saveCategoryEdit = saveCategoryEdit;
 
-        function deletePost(catKey, postId) {
-            if (!confirm("Delete this post?")) return;
-            remove(ref(db, "posts/" + catKey + "/" + postId)).then(function() {
-                showToast("Post deleted!");
-                loadPostsForCat();
+        function deleteCategory(key) {
+            if (!confirm("Delete category " + key + " and all its posts?")) return;
+            remove(ref(db, "categories/" + key)).then(function() {
+                return remove(ref(db, "posts/" + key));
+            }).then(function() {
+                showToast("Category deleted!");
+                loadCategories();
             }).catch(function() { showToast("Error!", true); });
         }
-        window.deletePost = deletePost;
+        window.deleteCategory = deleteCategory;
 
         function closeModal() {
             document.getElementById("modalOverlay").classList.remove("show");

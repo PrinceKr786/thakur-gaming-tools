@@ -135,6 +135,15 @@
         .nav-sub-item .svg-ic { margin-right: 2px; }
         .btn .svg-ic { margin-right: 6px; }
 
+        .nav-item[data-view="overview"] .ic, .m-item[data-view="overview"] .ic { color: #818cf8; }
+        .nav-item[data-view="keys"] .ic, .m-item[data-view="keys"] .ic { color: #fbbf24; }
+        .nav-item[data-view="categories"] .ic, .m-item[data-view="categories"] .ic { color: #fb923c; }
+        .nav-item[data-view="posts"] .ic, .m-item[data-view="posts"] .ic { color: #c084fc; }
+        .nav-item[data-view="settings"] .ic, .m-item[data-view="settings"] .ic { color: #38bdf8; }
+        .nav-sub-item:nth-child(1) .svg-ic, .nav-sub-item[data-sub="general"] .svg-ic, .sub-tab[data-tab="general"] .svg-ic { color: #38bdf8; }
+        .nav-sub-item:nth-child(2) .svg-ic, .nav-sub-item[data-sub="theme"] .svg-ic, .sub-tab[data-tab="theme"] .svg-ic { color: #c084fc; }
+        .nav-sub-item:nth-child(3) .svg-ic, .nav-sub-item[data-sub="password"] .svg-ic, .sub-tab[data-tab="password"] .svg-ic { color: #34d399; }
+
         .sub-tabs {
             display: flex;
             gap: 8px;
@@ -836,7 +845,7 @@
 
     <aside class="sidebar">
         <div class="logo">
-            <div class="icon"><svg class="svg-ic" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="icon"><svg class="svg-ic" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8.5 11l2.5 2.5L15.5 8.5" stroke="#fde047" stroke-width="2.4"/></svg></div>
             <div>
                 <div class="name">AKASH GAMING</div>
                 <div class="role">Admin Panel</div>
@@ -923,7 +932,7 @@
         </div>
 
         <div class="card settings-card" data-sec="password">
-            <h3><svg class="svg-ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.5"/></svg> Change Admin Password</h3>
+            <h3><svg class="svg-ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.5"/></svg> Change Admin Password</h3>
             <p class="card-sub">Apna admin panel password badlo — current password confirm karke naya password set karo.</p>
             <div class="form-row">
                 <div>
@@ -1079,7 +1088,7 @@
 
         <div class="card settings-card" data-sec="theme">
             <div class="theme-head">
-                <div class="t-icon"><svg class="svg-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-.9-.5-1.3-.3-.4-.5-.8-.5-1.2 0-1.1.9-2 2-2H17a5 5 0 0 0 5-5c0-4.4-4.5-8.5-10-8.5z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="10.5" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/></svg></div>
+                <div class="t-icon"><svg class="svg-ic" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#c084fc" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-.9-.5-1.3-.3-.4-.5-.8-.5-1.2 0-1.1.9-2 2-2H17a5 5 0 0 0 5-5c0-4.4-4.5-8.5-10-8.5z"/><circle cx="7.5" cy="11.5" r="1"/><circle cx="10.5" cy="7.5" r="1"/><circle cx="14.5" cy="7.5" r="1"/></svg></div>
                 <h3>Theme Colors</h3>
                 <span class="theme-live">● LIVE</span>
             </div>
@@ -1207,8 +1216,8 @@
                 </div>
 
             <div class="theme-actions">
-                <button class="btn" onclick="saveThemeColors()"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg> SAVE THEME</button>
-                <button class="btn btn-outline" onclick="revertThemeColors()"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> REVERT</button>
+                <button class="btn" onclick="saveThemeColors()"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg> SAVE THEME</button>
+                <button class="btn btn-outline" onclick="revertThemeColors()"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg> REVERT</button>
                 <button class="btn btn-red btn-small" onclick="resetThemeColors()">RESET DEFAULTS</button>
             </div>
         </div>

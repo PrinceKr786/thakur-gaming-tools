@@ -135,6 +135,15 @@
         .nav-sub-item .svg-ic { margin-right: 2px; }
         .btn .svg-ic { margin-right: 6px; }
 
+        .nav-item[data-view="overview"] .ic, .m-item[data-view="overview"] .ic { color: #818cf8; }
+        .nav-item[data-view="keys"] .ic, .m-item[data-view="keys"] .ic { color: #fbbf24; }
+        .nav-item[data-view="categories"] .ic, .m-item[data-view="categories"] .ic { color: #fb923c; }
+        .nav-item[data-view="posts"] .ic, .m-item[data-view="posts"] .ic { color: #c084fc; }
+        .nav-item[data-view="settings"] .ic, .m-item[data-view="settings"] .ic { color: #38bdf8; }
+        .nav-sub-item:nth-child(1) .svg-ic { color: #38bdf8; }
+        .nav-sub-item:nth-child(2) .svg-ic { color: #c084fc; }
+        .nav-sub-item:nth-child(3) .svg-ic { color: #34d399; }
+
         .sidebar .logout {
             margin-top: auto;
             background: rgba(239, 68, 68, 0.1);
@@ -845,7 +854,7 @@
 
     <aside class="sidebar">
         <div class="logo">
-            <div class="icon"><svg class="svg-ic" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+            <div class="icon"><svg class="svg-ic" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M8.5 11l2.5 2.5L15.5 8.5" stroke="#fde047" stroke-width="2.4"/></svg></div>
             <div>
                 <div class="name">AKASH GAMING</div>
                 <div class="role">Admin Panel</div>
@@ -890,7 +899,7 @@
                     <label>Key</label>
                     <div style="display:flex; gap:8px;">
                         <input type="text" id="keyInput" placeholder="e.g. PH-XXXXXX">
-                        <button class="btn btn-small" type="button" onclick="randomKey()" title="Generate random key"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
+                        <button class="btn btn-small" type="button" onclick="randomKey()" title="Generate random key"><svg class="svg-ic" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5M4 20 21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg></button>
                     </div>
                 </div>
                 <div>
@@ -939,7 +948,7 @@
 
         <div class="card">
             <h3 style="display:flex; justify-content:space-between; align-items:center;">Active User Keys
-                <button class="btn btn-small btn-red" onclick="clearExpiredKeys()" title="Delete all expired keys"><svg class="svg-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Clear Expired</button>
+                <button class="btn btn-small btn-red" onclick="clearExpiredKeys()" title="Delete all expired keys"><svg class="svg-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#f87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Clear Expired</button>
             </h3>
             <div id="keysList"></div>
         </div>
@@ -1095,12 +1104,12 @@
                     Object.keys(boundMap).forEach(function(did) { if (did !== boundId) boundExtra.push(did); });
                     const boundChips = [];
                     if (boundId) {
-                        boundChips.push('<span class="key-expiry" style="display:inline-flex; align-items:center; gap:4px; margin-right:8px;" title="' + esc(boundId) + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(boundId.length > 12 ? boundId.slice(0, 12) + "..." : boundId) + '</span>');
+                        boundChips.push('<span class="key-expiry" style="display:inline-flex; align-items:center; gap:4px; margin-right:8px;" title="' + esc(boundId) + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(boundId.length > 12 ? boundId.slice(0, 12) + "..." : boundId) + '</span>');
                     }
                     boundExtra.forEach(function(did) {
-                        boundChips.push('<span class="key-expiry" style="display:inline-flex; align-items:center; gap:4px; margin-right:8px;" title="' + esc(did) + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(did.length > 12 ? did.slice(0, 12) + "..." : did) + '</span>');
+                        boundChips.push('<span class="key-expiry" style="display:inline-flex; align-items:center; gap:4px; margin-right:8px;" title="' + esc(did) + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(did.length > 12 ? did.slice(0, 12) + "..." : did) + '</span>');
                     });
-                    const limitChip = '<span class="key-status" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + boundChips.length + '/' + (data.maxDevices ? data.maxDevices : "∞") + '</span>';
+                    const limitChip = '<span class="key-status" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + boundChips.length + '/' + (data.maxDevices ? data.maxDevices : "∞") + '</span>';
                     const unbindButtons = [];
                     if (boundId) {
                         unbindButtons.push('<button class="btn btn-small" onclick="unbindDevice(\'' + jsStr(key) + '\',\'' + jsStr(boundId) + '\')">RESET</button>');
@@ -1112,15 +1121,15 @@
                     const item = document.createElement("div");
                     item.className = "list-item";
                     item.innerHTML =
-                        '<div class="info"><div style="font-size: 20px;"><svg class="svg-ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.5 12.5 20 3M14 9l3 3M17.5 5.5l3 3"/></svg></div><div>' +
+                        '<div class="info"><div style="font-size: 20px;"><svg class="svg-ic" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="M10.5 12.5 20 3M14 9l3 3M17.5 5.5l3 3"/></svg></div><div>' +
                         '<div class="t1">' + esc(key) + '</div>' +
                         '<div class="t2">' + esc(name || "-") + '</div>' +
                         '<div class="key-meta" style="display:flex; gap:8px; align-items:center; margin-top:4px; flex-wrap:wrap;">' +
                         '<span class="key-status ' + statusCls + '">' + statusText + '</span>' +
                         typeText + usedText + limitChip +
-                        (durationText ? '<span class="key-expiry"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> ' + esc(durationText) + '</span>' : '') +
+                        (durationText ? '<span class="key-expiry"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#fb923c" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> ' + esc(durationText) + '</span>' : '') +
                         '<span class="key-expiry">Expires: ' + esc(expiryText) + '</span>' +
-                        (expiryMs > 0 ? '<span class="key-countdown" data-expiry="' + expiryMs + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h14M5 22h14M6 2v5l6 5 6-5V2M6 22v-5l6-5 6 5v5"/></svg> ' + esc(remainingText(expiryMs)) + '</span>' : '') +
+                        (expiryMs > 0 ? '<span class="key-countdown" data-expiry="' + expiryMs + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h14M5 22h14M6 2v5l6 5 6-5V2M6 22v-5l6-5 6 5v5"/></svg> ' + esc(remainingText(expiryMs)) + '</span>' : '') +
                         '</div>' +
                         (boundChips.length ? '<div class="key-devices" style="margin-top:8px;">' + boundChips.join("") + '</div>' : '') +
                         '</div></div>' +
@@ -1244,8 +1253,8 @@
         let editTypeState = "Normal";
 
         const KEY_TYPE_OPTIONS = [
-            { value: "Normal", label: "Normal", icon: '<svg class="svg-ic" viewBox="0 0 24 24" width="14" height="14" fill="currentColor" stroke="none"><path d="M12 2l2.9 6.26 6.6.57-5 4.35 1.5 6.47L12 16.9l-6 3.75 1.5-6.47-5-4.35 6.6-.57z"/></svg>' },
-            { value: "VIP", label: "VIP", icon: '<svg class="svg-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16V6l4 4 4-6 4 6 4-4v10z"/><path d="M4 20h16"/></svg>' }
+            { value: "Normal", label: "Normal", icon: '<svg class="svg-ic" viewBox="0 0 24 24" width="14" height="14" fill="#fbbf24" stroke="none"><path d="M12 2l2.9 6.26 6.6.57-5 4.35 1.5 6.47L12 16.9l-6 3.75 1.5-6.47-5-4.35 6.6-.57z"/></svg>' },
+            { value: "VIP", label: "VIP", icon: '<svg class="svg-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 16V6l4 4 4-6 4 6 4-4v10z"/><path d="M4 20h16"/></svg>' }
         ];
 
         function renderTypeMenu(menuId, state, onPick) {
@@ -1321,7 +1330,7 @@
                 const item = document.createElement("div");
                 item.className = "cs-option" + (isSel ? " selected" : "");
                 item.innerHTML =
-                    '<span class="cs-opt-name"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(opt.label) + '</span>' +
+                    '<span class="cs-opt-name"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(opt.label) + '</span>' +
                     '<span class="cs-opt-check">' + (isSel ? "✓" : "") + '</span>';
                 item.addEventListener("click", function() {
                     onPick(opt);
