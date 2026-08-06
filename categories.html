@@ -318,6 +318,14 @@
         .btn:hover { filter: brightness(1.1); transform: translateY(-1px); }
         .btn-red { background: rgba(239, 68, 68, 0.15); color: var(--red); border: 1px solid rgba(239, 68, 68, 0.3); }
         .btn-small { padding: 8px 14px; font-size: 11px; }
+        .btn-ghost {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--muted);
+            padding: 8px 12px;
+            font-size: 11px;
+        }
+        .btn-ghost:hover { color: #fff; background: rgba(99, 102, 241, 0.2); border-color: rgba(99, 102, 241, 0.4); }
 
         .list-item {
             display: flex;
@@ -950,16 +958,29 @@
                     return;
                 }
                 const cats = snap.val();
-                Object.keys(cats).forEach(function(key) {
-                    const data = cats[key] || {};
+                const catArr = Object.keys(cats).map(function(key) {
+                    return { key: key, data: cats[key] || {} };
+                });
+                catArr.sort(function(a, b) {
+                    const oa = catOrderOf(a.data, a.key);
+                    const ob = catOrderOf(b.data, b.key);
+                    if (oa !== ob) return oa - ob;
+                    return a.key < b.key ? -1 : 1;
+                });
+                catArr.forEach(function(entry, i) {
+                    const key = entry.key;
+                    const data = entry.data;
+                    const pos = i + 1;
                     const item = document.createElement("div");
                     item.className = "list-item";
                     item.innerHTML =
                         '<div class="info">' +
                         '<img class="thumb" src="' + esc(data.image) + '" alt="">' +
                         '<div><div class="t1">' + esc(data.icon) + ' ' + esc(data.name) + '</div>' +
-                        '<div class="t2">Posts limit: ' + esc(data.limit || "∞") + ' • ' + esc(key) + '</div></div></div>' +
+                        '<div class="t2">#' + pos + ' • Posts limit: ' + esc(data.limit || "∞") + ' • ' + esc(key) + '</div></div></div>' +
                         '<div class="actions">' +
+                        '<button class="btn btn-ghost btn-small" title="Move up" onclick="moveCategory(\'' + jsStr(key) + '\',-1)">▲</button>' +
+                        '<button class="btn btn-ghost btn-small" title="Move down" onclick="moveCategory(\'' + jsStr(key) + '\',1)">▼</button>' +
                         '<button class="btn btn-small" onclick="editCategory(\'' + jsStr(key) + '\')">EDIT</button>' +
                         '<button class="btn btn-red btn-small" onclick="deleteCategory(\'' + jsStr(key) + '\')">DELETE</button>' +
                         '<button class="export-ic-btn" onclick="exportCategory(\'' + jsStr(key) + '\')" title="Export category backup"><svg class="svg-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M6 9l6 6 6-6M4 21h16"/></svg></button>' +
@@ -979,7 +1000,7 @@
             const limit = document.getElementById("catLimitInput").value.trim() || "";
             if (!name) { showToast("Category name is required!", true); return; }
             const key = name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "cat-" + Date.now();
-            set(ref(db, "categories/" + key), { name: name, icon: icon, image: image, limit: limit })
+            set(ref(db, "categories/" + key), { name: name, icon: icon, image: image, limit: limit, order: Date.now() })
                 .then(function() {
                     showToast("Category saved!");
                     document.getElementById("catNameInput").value = "";
@@ -1024,8 +1045,40 @@
         }
         window.saveCategoryEdit = saveCategoryEdit;
 
+        function randomCode() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let s = "";
+            for (let i = 0; i < 6; i++) s += chars.charAt(Math.floor(Math.random() * chars.length));
+            return s;
+        }
+
         function deleteCategory(key) {
-            if (!confirm("Delete category " + key + " and all its posts?")) return;
+            const code = randomCode();
+            document.getElementById("modalBody").innerHTML =
+                '<h3>Confirm Delete</h3>' +
+                '<div class="field-hint" style="margin-bottom:12px;">Category <b>' + esc(key) + '</b> aur uske saare posts delete ho jayenge. Neeche wala code copy karke type karo:</div>' +
+                '<div style="text-align:center; font-size:24px; font-weight:900; letter-spacing:6px; font-family:Consolas,monospace; color:#f59e0b; background:rgba(251,191,36,0.1); border:1px dashed rgba(251,191,36,0.4); border-radius:12px; padding:14px; margin-bottom:14px; user-select:all;">' + code + '</div>' +
+                '<label>Type / paste the code</label>' +
+                '<input type="text" id="deleteCodeInput" placeholder="Code yahan likho" style="margin-bottom:14px;">' +
+                '<div style="display:flex; gap:10px; justify-content:flex-end;">' +
+                '<button class="btn btn-small" onclick="closeModal()">CANCEL</button>' +
+                '<button class="btn btn-red btn-small" onclick="confirmCategoryDelete(\'' + jsStr(key) + '\',\'' + code + '\')">DELETE</button>' +
+                '</div>';
+            document.getElementById("modalOverlay").classList.add("show");
+            setTimeout(function() {
+                const inp = document.getElementById("deleteCodeInput");
+                if (inp) inp.focus();
+            }, 100);
+        }
+        window.deleteCategory = deleteCategory;
+
+        function confirmCategoryDelete(key, code) {
+            const typed = (document.getElementById("deleteCodeInput").value || "").trim().toUpperCase();
+            if (typed !== code) {
+                showToast("Wrong code! Delete cancelled.", true);
+                return;
+            }
+            closeModal();
             remove(ref(db, "categories/" + key)).then(function() {
                 return remove(ref(db, "posts/" + key));
             }).then(function() {
@@ -1033,7 +1086,41 @@
                 loadCategories();
             }).catch(function() { showToast("Error!", true); });
         }
-        window.deleteCategory = deleteCategory;
+        window.confirmCategoryDelete = confirmCategoryDelete;
+
+        function catOrderOf(data, key) {
+            return (data && typeof data.order === "number") ? data.order : Number.MAX_SAFE_INTEGER;
+        }
+
+        function moveCategory(key, dir) {
+            get(ref(db, "categories")).then(function(snap) {
+                if (!snap.exists()) return;
+                const cats = snap.val();
+                const sorted = Object.keys(cats).sort(function(a, b) {
+                    const oa = catOrderOf(cats[a], a);
+                    const ob = catOrderOf(cats[b], b);
+                    if (oa !== ob) return oa - ob;
+                    return a < b ? -1 : 1;
+                });
+                const idx = sorted.indexOf(key);
+                const newIdx = idx + dir;
+                if (idx < 0 || newIdx < 0 || newIdx >= sorted.length) { showToast("Already at edge!", true); return; }
+                const tmp = sorted[idx];
+                sorted[idx] = sorted[newIdx];
+                sorted[newIdx] = tmp;
+                const updates = {};
+                sorted.forEach(function(k, i) {
+                    updates["categories/" + k + "/order"] = i + 1;
+                });
+                update(ref(db), updates)
+                    .then(function() {
+                        showToast("Order updated!");
+                        loadCategories();
+                    })
+                    .catch(function() { showToast("Error!", true); });
+            });
+        }
+        window.moveCategory = moveCategory;
 
         function exportCategory(key) {
             Promise.all([get(ref(db, "categories/" + key)), get(ref(db, "posts/" + key))])
