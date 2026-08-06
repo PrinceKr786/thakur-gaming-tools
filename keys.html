@@ -1060,6 +1060,31 @@
         }
         window.jsStr = jsStr;
 
+        window.deviceCache = {};
+        window.deviceModalKey = "";
+
+        function deviceChip(did) {
+            return '<span class="key-expiry" style="display:inline-flex; align-items:center; gap:4px; margin-right:8px;" title="' + esc(did) + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(did.length > 12 ? did.slice(0, 12) + "..." : did) + '</span>';
+        }
+        window.deviceChip = deviceChip;
+
+        function showDevices(key) {
+            const ids = window.deviceCache[key] || [];
+            if (!ids.length) { showToast("No devices bound yet!"); return; }
+            window.deviceModalKey = key;
+            const rows = ids.map(function(did) {
+                return '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; background:rgba(255,255,255,0.04); border-radius:10px; padding:8px 12px; margin-bottom:6px;">' +
+                    '<span style="font-size:11px; color:#94a3b8; font-family:monospace; word-break:break-all;">' + esc(did) + '</span>' +
+                    '<button class="btn btn-red btn-small" style="flex-shrink:0;" onclick="unbindDevice(\'' + jsStr(key) + '\',\'' + jsStr(did) + '\')">RESET</button>' +
+                    '</div>';
+            }).join("");
+            document.getElementById("modalBody").innerHTML =
+                '<h3 style="display:flex; justify-content:space-between; align-items:center;">Devices (' + ids.length + ')<button class="btn btn-red btn-small" onclick="closeModal()">CLOSE</button></h3>' +
+                '<div style="max-height:60vh; overflow-y:auto;">' + rows + '</div>';
+            document.getElementById("modalOverlay").classList.add("show");
+        }
+        window.showDevices = showDevices;
+
         function loadKeys() {
             const list = document.getElementById("keysList");
             list.innerHTML = '<div class="empty-state">Loading...</div>';
@@ -1100,23 +1125,12 @@
                     const typeText = '<span class="key-status" style="background:rgba(168,85,247,0.12); color:#a855f7; border:1px solid rgba(168,85,247,0.3);">' + esc(type.toUpperCase()) + '</span>';
                     const boundId = data.boundDeviceId && String(data.boundDeviceId) !== "NONE" && String(data.boundDeviceId) !== "none" ? String(data.boundDeviceId) : "";
                     const boundMap = data.boundDevices || {};
-                    const boundExtra = [];
-                    Object.keys(boundMap).forEach(function(did) { if (did !== boundId) boundExtra.push(did); });
-                    const boundChips = [];
-                    if (boundId) {
-                        boundChips.push('<span class="key-expiry" style="display:inline-flex; align-items:center; gap:4px; margin-right:8px;" title="' + esc(boundId) + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(boundId.length > 12 ? boundId.slice(0, 12) + "..." : boundId) + '</span>');
-                    }
-                    boundExtra.forEach(function(did) {
-                        boundChips.push('<span class="key-expiry" style="display:inline-flex; align-items:center; gap:4px; margin-right:8px;" title="' + esc(did) + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + esc(did.length > 12 ? did.slice(0, 12) + "..." : did) + '</span>');
-                    });
-                    const limitChip = '<span class="key-status" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + boundChips.length + '/' + (data.maxDevices ? data.maxDevices : "∞") + '</span>';
-                    const unbindButtons = [];
-                    if (boundId) {
-                        unbindButtons.push('<button class="btn btn-small" onclick="unbindDevice(\'' + jsStr(key) + '\',\'' + jsStr(boundId) + '\')">RESET</button>');
-                    }
-                    boundExtra.forEach(function(did) {
-                        unbindButtons.push('<button class="btn btn-small" onclick="unbindDevice(\'' + jsStr(key) + '\',\'' + jsStr(did) + '\')">RESET</button>');
-                    });
+                    const allDeviceIds = [];
+                    if (boundId) allDeviceIds.push(boundId);
+                    Object.keys(boundMap).forEach(function(did) { if (did !== boundId) allDeviceIds.push(did); });
+                    window.deviceCache[key] = allDeviceIds;
+                    const shownChips = allDeviceIds.slice(0, 3).map(deviceChip);
+                    const limitChip = '<span class="key-status" style="background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3);"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2" width="10" height="20" rx="2"/><path d="M11 18h2"/></svg> ' + allDeviceIds.length + '/' + (data.maxDevices ? data.maxDevices : "∞") + '</span>';
                     const name = data.note || data.name || "";
                     const item = document.createElement("div");
                     item.className = "list-item";
@@ -1131,10 +1145,12 @@
                         '<span class="key-expiry">Expires: ' + esc(expiryText) + '</span>' +
                         (expiryMs > 0 ? '<span class="key-countdown" data-expiry="' + expiryMs + '"><svg class="svg-ic" viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#f59e0b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 2h14M5 22h14M6 2v5l6 5 6-5V2M6 22v-5l6-5 6 5v5"/></svg> ' + esc(remainingText(expiryMs)) + '</span>' : '') +
                         '</div>' +
-                        (boundChips.length ? '<div class="key-devices" style="margin-top:8px;">' + boundChips.join("") + '</div>' : '') +
+                        (allDeviceIds.length ? '<div class="key-devices" style="margin-top:8px; display:flex; align-items:center; gap:6px; flex-wrap:wrap;">' + shownChips.join("") +
+                            (allDeviceIds.length > 3 ? '<button class="btn btn-small" style="padding:6px 10px; font-size:10px;" onclick="showDevices(\'' + jsStr(key) + '\')">+' + (allDeviceIds.length - 3) + ' MORE</button>' : '') +
+                            '</div>' : '') +
                         '</div></div>' +
                         '<div class="actions">' +
-                        unbindButtons.join("") +
+                        (allDeviceIds.length ? '<button class="btn btn-small" onclick="showDevices(\'' + jsStr(key) + '\')">DEVICES (' + allDeviceIds.length + ')</button>' : '') +
                         '<button class="btn btn-small ' + (banned ? "btn-green" : "btn-red") + '" onclick="toggleBan(\'' + jsStr(key) + '\')">' + (banned ? "UNBAN" : "BAN") + '</button>' +
                         '<button class="btn btn-small" onclick="editKey(\'' + jsStr(key) + '\')">EDIT</button>' +
                         '<button class="btn btn-red btn-small" onclick="deleteKey(\'' + jsStr(key) + '\')">DELETE</button>' +
@@ -1501,6 +1517,9 @@
             update(ref(db), updates).then(function() {
                 showToast("Device unbound!");
                 loadKeys();
+                if (window.deviceModalKey && document.getElementById("modalOverlay").classList.contains("show")) {
+                    showDevices(window.deviceModalKey);
+                }
             }).catch(function() { showToast("Error!", true); });
         }
         window.unbindDevice = unbindDevice;
@@ -1514,20 +1533,10 @@
                 const dur = data.durationHours || 24;
                 const boundId = data.boundDeviceId && String(data.boundDeviceId) !== "NONE" && String(data.boundDeviceId) !== "none" ? String(data.boundDeviceId) : "";
                 const boundMap = data.boundDevices || {};
-                const boundList = [];
-                if (boundId) {
-                    boundList.push('<div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); border-radius:10px; padding:8px 12px; margin-bottom:6px;">' +
-                        '<span style="font-size:11px; color:#94a3b8; font-family:monospace;">' + esc(boundId) + '</span>' +
-                        '<button class="btn btn-red btn-small" onclick="unbindDevice(\'' + jsStr(key) + '\',\'' + jsStr(boundId) + '\');document.getElementById(\'modalOverlay\').classList.remove(\'show\');">✕</button>' +
-                        '</div>');
-                }
-                Object.keys(boundMap).forEach(function(did) {
-                    if (did === boundId) return;
-                    boundList.push('<div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); border-radius:10px; padding:8px 12px; margin-bottom:6px;">' +
-                        '<span style="font-size:11px; color:#94a3b8; font-family:monospace;">' + esc(did) + '</span>' +
-                        '<button class="btn btn-red btn-small" onclick="unbindDevice(\'' + jsStr(key) + '\',\'' + jsStr(did) + '\');document.getElementById(\'modalOverlay\').classList.remove(\'show\');">✕</button>' +
-                        '</div>');
-                });
+                const allDeviceIds = [];
+                if (boundId) allDeviceIds.push(boundId);
+                Object.keys(boundMap).forEach(function(did) { if (did !== boundId) allDeviceIds.push(did); });
+                window.deviceCache[key] = allDeviceIds;
                 document.getElementById("modalBody").innerHTML =
                     '<h3>Edit Key: ' + esc(key) + '</h3>' +
                     '<div class="form-row"><div><label>User Name / Note</label><input type="text" id="mKeyNote" value="' + esc(data.note || data.name || "") + '"></div></div>' +
@@ -1542,7 +1551,11 @@
                     '<span class="cs-value" id="mLimitValue">' + esc(limitLabel(data.maxDevices)) + '</span>' +
                     '<span class="cs-arrow">▾</span></button>' +
                     '<div class="cs-menu" id="mLimitMenu"></div></div></div></div>' +
-                    (boundList.length ? '<div style="margin-bottom:14px;"><label>Bound Device</label>' + boundList.join("") + '</div>' : '') +
+                    (allDeviceIds.length ? '<div style="margin-bottom:14px;"><label>Bound Devices (' + allDeviceIds.length + ')</label>' +
+                        '<div style="display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px;">' + allDeviceIds.slice(0, 5).map(deviceChip).join("") +
+                        (allDeviceIds.length > 5 ? '<span class="key-expiry">+' + (allDeviceIds.length - 5) + ' more</span>' : '') +
+                        '</div>' +
+                        '<button class="btn btn-small" onclick="showDevices(\'' + jsStr(key) + '\')">VIEW ALL DEVICES</button></div>' : '') +
                     '<div style="display: flex; gap: 10px; justify-content: flex-end;">' +
                     '<button class="btn btn-red btn-small" onclick="closeModal()">CANCEL</button>' +
                     '<button class="btn btn-small" onclick="saveKeyEdit(\'' + jsStr(key) + '\')">SAVE</button></div>';
@@ -1603,6 +1616,7 @@
         window.clearExpiredKeys = clearExpiredKeys;
 
         function closeModal() {
+            window.deviceModalKey = "";
             document.getElementById("modalOverlay").classList.remove("show");
         }
         window.closeModal = closeModal;
