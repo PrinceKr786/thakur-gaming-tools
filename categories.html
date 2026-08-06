@@ -269,6 +269,29 @@
             appearance: textfield;
         }
 
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.35);
+            color: var(--text);
+            font-size: 12px;
+            cursor: pointer;
+            box-sizing: border-box;
+        }
+        input[type="file"]::-webkit-file-upload-button {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            margin-right: 12px;
+        }
+
         .field-hint {
             margin-top: 6px;
             font-size: 11px;
@@ -327,6 +350,26 @@
         .list-item .info .t2 { font-size: 11px; color: var(--muted); }
 
         .actions { display: flex; gap: 8px; }
+
+        .export-ic-btn {
+            position: absolute;
+            top: 6px;
+            right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+            border-radius: 8px;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: #38bdf8;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: all 0.2s;
+            z-index: 2;
+        }
+        .export-ic-btn:hover { background: rgba(56, 189, 248, 0.2); }
 
         .empty-state {
             color: var(--muted);
@@ -635,6 +678,9 @@
             background: rgba(26, 34, 52, 0.97);
             transition: all 0.25s ease;
             animation: rise 0.45s ease both;
+            position: relative;
+            padding-top: 32px;
+            align-items: flex-start;
         }
         .list-item:nth-child(2) { animation-delay: 0.05s; }
         .list-item:nth-child(3) { animation-delay: 0.1s; }
@@ -776,6 +822,15 @@
             <h3>Categories</h3>
             <div id="catsList"></div>
         </div>
+
+        <div class="card">
+            <h3>Import Category Backup</h3>
+            <div class="field-hint" style="margin-bottom: 12px;">Kisi bhi admin panel se category ka <b>EXPORT</b> karke jo JSON file mili hai, wo yahan select karo — category + uske saare posts is admin me add ho jayenge. Agar category key pehle se hai to confirm karne ke baad overwrite hoga.</div>
+            <input type="file" id="importCatFile" accept=".json,application/json">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 12px;">
+                <button class="btn" onclick="importCategoryBackup()">Import Category</button>
+            </div>
+        </div>
     </div>
 
     <div class="modal-overlay" id="modalOverlay">
@@ -907,6 +962,7 @@
                         '<div class="actions">' +
                         '<button class="btn btn-small" onclick="editCategory(\'' + jsStr(key) + '\')">EDIT</button>' +
                         '<button class="btn btn-red btn-small" onclick="deleteCategory(\'' + jsStr(key) + '\')">DELETE</button>' +
+                        '<button class="export-ic-btn" onclick="exportCategory(\'' + jsStr(key) + '\')" title="Export category backup"><svg class="svg-ic" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M6 9l6 6 6-6M4 21h16"/></svg></button>' +
                         '</div>';
                     list.appendChild(item);
                 });
@@ -978,6 +1034,72 @@
             }).catch(function() { showToast("Error!", true); });
         }
         window.deleteCategory = deleteCategory;
+
+        function exportCategory(key) {
+            Promise.all([get(ref(db, "categories/" + key)), get(ref(db, "posts/" + key))])
+                .then(function(results) {
+                    const catSnap = results[0];
+                    const postsSnap = results[1];
+                    const payload = {
+                        type: "thakur-category-backup",
+                        version: 1,
+                        exportedAt: Date.now(),
+                        categoryKey: key,
+                        category: catSnap.exists() ? catSnap.val() : {},
+                        posts: postsSnap.exists() ? postsSnap.val() : {}
+                    };
+                    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+                    const a = document.createElement("a");
+                    a.href = URL.createObjectURL(blob);
+                    a.download = "category-" + key + "-backup.json";
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+                })
+                .catch(function() { showToast("Export failed!", true); });
+        }
+        window.exportCategory = exportCategory;
+
+        function importCategoryBackup() {
+            const input = document.getElementById("importCatFile");
+            const file = input.files && input.files[0];
+            if (!file) { showToast("Select a backup JSON file first!", true); return; }
+            const reader = new FileReader();
+            reader.onload = function() {
+                try {
+                    const data = JSON.parse(reader.result);
+                    if (data.type !== "thakur-category-backup") {
+                        showToast("Invalid backup file!", true);
+                        return;
+                    }
+                    const key = data.categoryKey || "";
+                    const catData = data.category || {};
+                    const postsData = data.posts || {};
+                    if (!key || !catData.name) { showToast("Backup has no category!", true); return; }
+                    get(ref(db, "categories/" + key)).then(function(snap) {
+                        const exists = snap.exists();
+                        const postCount = Object.keys(postsData).length;
+                        const msg = exists
+                            ? "Category '" + key + "' already exists in this admin. Overwrite it and its " + postCount + " post(s)?"
+                            : "Import category '" + catData.name + "' with " + postCount + " post(s)?";
+                        if (!confirm(msg)) return;
+                        const updates = {};
+                        updates["categories/" + key] = catData;
+                        updates["posts/" + key] = postsData;
+                        update(ref(db), updates).then(function() {
+                            showToast("Category imported!");
+                            input.value = "";
+                            loadCategories();
+                        }).catch(function() { showToast("Import failed!", true); });
+                    });
+                } catch (e) {
+                    showToast("Invalid JSON file!", true);
+                }
+            };
+            reader.onerror = function() { showToast("Could not read file!", true); };
+            reader.readAsText(file);
+        }
+        window.importCategoryBackup = importCategoryBackup;
 
         function closeModal() {
             document.getElementById("modalOverlay").classList.remove("show");
